@@ -14,10 +14,10 @@ REST.prototype.connectMysql = function() {
     var self = this;
     var pool      =    mysql.createPool({
         connectionLimit : 100,
-        host     : 'globaljoy.cwulowdxlu9l.us-east-1.rds.amazonaws.com',
+        host     : 'growpro.c7vjfwej9vmn.us-east-1.rds.amazonaws.com',
         user     : 'root',
-        password : 'Yourethebest!',
-        database : 'GlobalJoy',
+        password : 'koalalove69',
+        database : 'GrowPro',
         debug    :  false
     });
     pool.getConnection(function(err,connection){
