@@ -12,12 +12,12 @@ function REST(){
 
 REST.prototype.connectMysql = function() {
     var self = this;
-    var pool      =    mysql.createPool({
-        connectionLimit : 100,
-        host     : 'growpro.c7vjfwej9vmn.us-east-1.rds.amazonaws.com',
+    var pool = mysql.createPool({
+        connectionLimit : 200,
+        host     : 'globaljoy.cwulowdxlu9l.us-east-1.rds.amazonaws.com',
         user     : 'root',
-        password : 'koalalove69',
-        database : 'GrowPro',
+        password : 'Yourethebest!',
+        database : 'GlobalJoy',
         debug    :  false
     });
     pool.getConnection(function(err,connection){
@@ -47,7 +47,7 @@ REST.prototype.startServer = function() {
       });
     }
     else {
-      app.listen(3000 ,function(){
+      app.listen(3000,function(){
           console.log("Alright ! I am alive at PORT 3000");
       });
     }
