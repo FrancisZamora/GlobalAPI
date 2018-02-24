@@ -22,6 +22,20 @@ REST_ROUTER.prototype.handleRoutes= function(router,connection,md5) {
     });
 
 
+    router.get("/retrieveprofessionals",function(req,res){
+        var query = "SELECT * FROM ?? ";
+        var table = ["professionals"];
+        query = mysql.format(query,table);
+        connection.query(query,function(err,rows){
+            if(err) {
+                res.json({"Error" : true, "Message" : "Error executing MySQL query"});
+            } else {
+                res.json({"Success" : true,  "Message" : "User Added !",rows});
+            }
+        });
+    });
+
+
 
 
 
