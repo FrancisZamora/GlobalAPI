@@ -41,16 +41,9 @@ REST.prototype.configureExpress = function(connection) {
 
 REST.prototype.startServer = function() {
 
-    if (process.env.PORT)  {
-      app.listen(process.env.PORT ,function(){
-          console.log("Alright ! I am alive at" + process.env.PORT );
-      });
-    }
-    else {
-      app.listen(3000,function(){
-          console.log("Alright ! I am alive at PORT 3000");
-      });
-    }
+   app.listen(process.env.PORT || 3000, function(){
+      console.log("Express server listening on port %d in %s mode", this.address().port, app.settings.env);
+   });
 }
 
 REST.prototype.stop = function(err) {
