@@ -10,11 +10,11 @@ REST_ROUTER.prototype.handleRoutes= function(router,connection,md5) {
 
    router.post("/signup",function(req,res){
         var query = "INSERT INTO ??(??,??) VALUES (?,?)";
-        var table = ["user_login","user_email","user_password",req.body.email,md5(req.body.password)];
+        var table = ["user_info","user_email","user_password",req.body.email,md5(req.body.password)];
         query = mysql.format(query,table);
         connection.query(query,function(err,rows){
             if(err) {
-                res.json({"Error" : true, "Message" : "Error executing MySQL query"});
+                res.json({"Error" : true, "Message" : "Error executing MySQL query: signing up "});
             } else {
                 res.json({"Success" : true,  "Message" : "User Added !"});
             }
