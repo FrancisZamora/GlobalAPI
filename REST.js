@@ -8,7 +8,7 @@ REST_ROUTER.prototype.handleRoutes= function(router,connection,md5) {
 
    
 
-   router.post("/signup",function(req,res){
+   router.post("/account/register",function(req,res){
         var query = "INSERT INTO ??(??,??,??,??,??) VALUES (?,?,?,?,?)";
         var table = ["users","user_email","user_password","phone","name","role",req.body.email,req.body.password, req.body.phone,req.body.name,req.body.role];
         if (req.body.role == 'client') {
@@ -29,7 +29,7 @@ REST_ROUTER.prototype.handleRoutes= function(router,connection,md5) {
     });
 
 
-   router.post("/login",function(req,res){
+   router.post("/account/login",function(req,res){
         var query = "SELECT * FROM ?? WHERE ?? = ? ";
         var table = ["users","user_email",req.body.email, req.body.password];
        
@@ -42,28 +42,183 @@ REST_ROUTER.prototype.handleRoutes= function(router,connection,md5) {
         
             
             else {
-                switch (rows.length) {
-                case rows.length < 1:
+                if (rows.length < 1){
                     res.json({"Error" : true, "Message" : "Incorrect Password or Username"});
-                    break;
-                case rows.length == 1:
-                    password = rows[0].user_password
-
-                    if (password != req.body.password) { 
-                        res.json({"Error": true, "Message"  :"Incorrect Password or Username"});
-                    }
-                    else if (password == req.body.password) {
-                        res.json({"Success":true, "Message" : "Login Successful"});
-                    }
-                    break;
                 }
+                else {
+                password = rows[0].user_password
+
+                if (password != req.body.password) { 
+                    res.json({"Error": true, "Message"  :"Incorrect Password or Username"});
+                }
+                else if (password == req.body.password) {
+                    res.json({"Success":true, "Message" : "Login Successful"});
+                }
+            }
 
             }
-        }
 
             
         });
     });
+
+   router.put("/updatepassword",function(req,res){
+       var query = "UPDATE ?? SET ?? = ?";
+ 
+        var table = ["users","user_password", req.body.password];
+       
+        query = mysql.format(query,table);
+        connection.query(query,function(err,rows){
+
+            if(err) {
+                res.json({"Error" : true, "Message" : "Error Logging in"});
+            } 
+        
+            
+            else {
+                res.json({"Success" : true,  "Message" : "Password Changed Successfully"});
+
+
+            }
+
+            
+        });
+    });
+
+    router.put("/updatepassword",function(req,res){
+       var query = "UPDATE ?? SET ?? = ?";
+ 
+        var table = ["users","user_password", req.body.password];
+       
+        query = mysql.format(query,table);
+        connection.query(query,function(err,rows){
+
+            if(err) {
+                res.json({"Error" : true, "Message" : "Error Logging in"});
+            } 
+        
+            
+            else {
+                res.json({"Success" : true,  "Message" : "Password Changed Successfully"});
+
+
+            }
+
+            
+        });
+    });
+
+
+   router.put("/updatephone",function(req,res){
+       var query = "UPDATE ?? SET ?? = ?";
+ 
+        var table = ["users","phone", req.body.phone];
+       
+        query = mysql.format(query,table);
+        connection.query(query,function(err,rows){
+
+            if(err) {
+                res.json({"Error" : true, "Message" : "Error Logging in"});
+            } 
+        
+            
+            else {
+                res.json({"Success" : true,  "Message" : "Password Changed Successfully"});
+
+
+            }
+
+            
+        });
+    });
+
+      router.put("/updateemail",function(req,res){
+       var query = "UPDATE ?? SET ?? = ?";
+ 
+        var table = ["users","user_email", req.body.email];
+       
+        query = mysql.format(query,table);
+        connection.query(query,function(err,rows){
+
+            if(err) {
+                res.json({"Error" : true, "Message" : "Error Logging in"});
+            } 
+        
+            
+            else {
+                res.json({"Success" : true,  "Message" : "Password Changed Successfully"});
+
+
+            }
+
+            
+        });
+    });
+
+    router.put("/account/apply",function(req,res){
+       var query = "UPDATE ?? SET ?? = ? WHERE ?? = ?  ";
+ 
+        var table = ["users","pending_approval", "user_email", req.body.request,req.body.email];
+        if (req.body.request == "true") {
+            req.body.request = 1;
+        }
+        else if (req.body.request == "false") {
+            
+                req.body.request = 0; 
+            
+        }
+       
+        query = mysql.format(query,table);
+        connection.query(query,function(err,rows){
+
+            if(err) {
+                res.json({"Error" : true, "Message" : "Error Logging in"});
+            } 
+        
+            
+            else {
+                res.json({"Success" : true,  "Message" : "Password Changed Successfully"});
+
+
+            }
+
+            
+        });
+    });
+
+
+    router.put("/administrator/approve",function(req,res){
+       var query = "UPDATE ?? SET ?? = ? WHERE ?? = ?  ";
+ 
+        var table = ["users","approved", "user_email", req.body.request,req.body.email];
+        if (req.body.request == "true") {
+            req.body.request = 1;
+        }
+        else if (req.body.request == "false") {
+            
+            req.body.request = 0; 
+            
+        }
+       
+        query = mysql.format(query,table);
+        connection.query(query,function(err,rows){
+
+            if(err) {
+                res.json({"Error" : true, "Message" : "Error Logging in"});
+            } 
+        
+            
+            else {
+                res.json({"Success" : true,  "Message" : "Password Changed Successfully"});
+
+
+            }
+
+            
+        });
+    });
+
+
 
    
 
