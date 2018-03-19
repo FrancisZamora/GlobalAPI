@@ -9,8 +9,15 @@ REST_ROUTER.prototype.handleRoutes= function(router,connection,md5) {
    
 
    router.post("/signup",function(req,res){
-        var query = "INSERT INTO ??(??,??) VALUES (?,?)";
-        var table = ["user_info","user_email","user_password",req.body.email,md5(req.body.password)];
+        var query = "INSERT INTO ??(??,??,??,??,??) VALUES (?,?,?,?,?)";
+        var table = ["users","user_email","user_password","phone","name","role",req.body.email,md5(req.body.password), req.body.phone,req.body.name,req.body.role];
+        if (req.body.role == 'client') {
+            req.body.role = 0;
+        }
+        else {
+            req.body.role = 1;
+        }
+
         query = mysql.format(query,table);
         connection.query(query,function(err,rows){
             if(err) {
