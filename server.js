@@ -12,8 +12,8 @@ function REST(){
 
 REST.prototype.connectMysql = function() {
     var self = this;
-    var pool = mysql.createPool({
-        connectionLimit : 200,
+    var pool      =    mysql.createPool({
+        connectionLimit : 100,
         host     : 'globaljoy.cwulowdxlu9l.us-east-1.rds.amazonaws.com',
         user     : 'root',
         password : 'Yourethebest!',
@@ -41,9 +41,16 @@ REST.prototype.configureExpress = function(connection) {
 
 REST.prototype.startServer = function() {
 
-   app.listen(process.env.PORT || 3000, function(){
-      console.log("Express server listening on port %d in %s mode", this.address().port, app.settings.env);
-   });
+    if (process.env.PORT)  {
+      app.listen(process.env.PORT ,function(){
+          console.log("Alright ! I am alive at" + process.env.PORT );
+      });
+    }
+    else {
+      app.listen(3000 ,function(){
+          console.log("Alright ! I am alive at PORT 3000");
+      });
+    }
 }
 
 REST.prototype.stop = function(err) {

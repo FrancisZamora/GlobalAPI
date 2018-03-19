@@ -23,17 +23,33 @@ REST_ROUTER.prototype.handleRoutes= function(router,connection,md5) {
 
 
     router.get("/retrieveprofessionals",function(req,res){
-        var query = "SELECT * FROM ?? ";
-        var table = ["professionals"];
+        var query = "SELECT * FROM ?? WHERE ROLE = 1 ";
+        var table = ["users"];
         query = mysql.format(query,table);
         connection.query(query,function(err,rows){
             if(err) {
-                res.json({"Error" : true, "Message" : "Error executing MySQL query"});
+                res.json({"Error" : true, "Message" : "Error executing MySQL query for professionals"});
             } else {
-                res.json({"Success" : true,  "Message" : "User Added !",rows});
+                res.json({"Success" : true,  "Message" : "Professionals",rows});
             }
         });
     });
+
+      router.get("/retrievegeneralusers",function(req,res){
+        var query = "SELECT * FROM ?? WHERE ROLE = 0";
+        var table = ["users"];
+        query = mysql.format(query,table);
+        connection.query(query,function(err,rows){
+            if(err) {
+                res.json({"Error" : true, "Message" : "Error executing MySQL query for general users"});
+            } else {
+                res.json({"Success" : true,  "Message" : "Users",rows});
+            }
+        });
+    });
+
+
+
 
 
 
