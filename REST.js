@@ -62,20 +62,21 @@ REST_ROUTER.prototype.handleRoutes= function(router,connection,md5) {
         });
     });
 
-   router.put("/updatepassword",function(req,res){
-       var query = "UPDATE ?? SET ?? = ?";
- 
-        var table = ["users","user_password", req.body.password];
+   router.put("/account/updatepassword",function(req,res){
+        var query = "UPDATE ?? SET ?? = ? WHERE ?? = ? AND ?? = ?";
+        var table = ["users","user_password", req.body.newpassword,"user_email",req.body.email,"user_password",req.body.oldpassword];
        
         query = mysql.format(query,table);
+        console.log(query);
         connection.query(query,function(err,rows){
 
             if(err) {
-                res.json({"Error" : true, "Message" : "Error Logging in"});
+                res.json({"Error" : true, "Message" : "Error Changing Password"});
             } 
         
             
             else {
+                
                 res.json({"Success" : true,  "Message" : "Password Changed Successfully"});
 
 
@@ -85,21 +86,24 @@ REST_ROUTER.prototype.handleRoutes= function(router,connection,md5) {
         });
     });
 
-    router.put("/updatepassword",function(req,res){
-       var query = "UPDATE ?? SET ?? = ?";
+  
+
+
+   router.put("/account/updatephone",function(req,res){
+       var query = "UPDATE ?? SET ?? = ? WHERE ?? = ?";
  
-        var table = ["users","user_password", req.body.password];
+        var table = ["users","phone", req.body.phone,"user_email",req.body.email];
        
         query = mysql.format(query,table);
         connection.query(query,function(err,rows){
 
             if(err) {
-                res.json({"Error" : true, "Message" : "Error Logging in"});
+                res.json({"Error" : true, "Message" : "Error Updating Phone"});
             } 
         
             
             else {
-                res.json({"Success" : true,  "Message" : "Password Changed Successfully"});
+                res.json({"Success" : true,  "Message" : "Phone number changed Changed Successfully"});
 
 
             }
@@ -108,45 +112,21 @@ REST_ROUTER.prototype.handleRoutes= function(router,connection,md5) {
         });
     });
 
-
-   router.put("/updatephone",function(req,res){
-       var query = "UPDATE ?? SET ?? = ?";
+      router.put("/account/updateemail",function(req,res){
+       var query = "UPDATE ?? SET ?? = ? WHERE ?? = ? ";
  
-        var table = ["users","phone", req.body.phone];
+        var table = ["users","user_email", req.body.email, "user_email",req.body.email];
        
         query = mysql.format(query,table);
         connection.query(query,function(err,rows){
 
             if(err) {
-                res.json({"Error" : true, "Message" : "Error Logging in"});
+                res.json({"Error" : true, "Message" : "Error Updating Email"});
             } 
         
             
             else {
-                res.json({"Success" : true,  "Message" : "Password Changed Successfully"});
-
-
-            }
-
-            
-        });
-    });
-
-      router.put("/updateemail",function(req,res){
-       var query = "UPDATE ?? SET ?? = ?";
- 
-        var table = ["users","user_email", req.body.email];
-       
-        query = mysql.format(query,table);
-        connection.query(query,function(err,rows){
-
-            if(err) {
-                res.json({"Error" : true, "Message" : "Error Logging in"});
-            } 
-        
-            
-            else {
-                res.json({"Success" : true,  "Message" : "Password Changed Successfully"});
+                res.json({"Success" : true,  "Message" : "Email Updated Successfully"});
 
 
             }
@@ -156,14 +136,13 @@ REST_ROUTER.prototype.handleRoutes= function(router,connection,md5) {
     });
 
     router.put("/account/apply",function(req,res){
-       var query = "UPDATE ?? SET ?? = ? WHERE ?? = ?  ";
+       var query = "UPDATE ?? SET ?? = ?    WHERE ?? = ?  ";
  
-        var table = ["users","pending_approval", "user_email", req.body.request,req.body.email];
+        var table = ["users","pending_approval", "role", "user_email", req.body.request, req.body.email];
         if (req.body.request == "true") {
             req.body.request = 1;
         }
         else if (req.body.request == "false") {
-            
                 req.body.request = 0; 
             
         }
@@ -172,12 +151,12 @@ REST_ROUTER.prototype.handleRoutes= function(router,connection,md5) {
         connection.query(query,function(err,rows){
 
             if(err) {
-                res.json({"Error" : true, "Message" : "Error Logging in"});
+                res.json({"Error" : true, "Message" : "Error occurred while applying to be a trainer"});
             } 
         
             
             else {
-                res.json({"Success" : true,  "Message" : "Password Changed Successfully"});
+                res.json({"Success" : true,  "Message" : "Applied to be a trainer!" });
 
 
             }
@@ -188,14 +167,14 @@ REST_ROUTER.prototype.handleRoutes= function(router,connection,md5) {
 
 
     router.put("/administrator/approve",function(req,res){
-       var query = "UPDATE ?? SET ?? = ? WHERE ?? = ?  ";
+       var query = "UPDATE ?? SET ?? = ?  WHERE ?? = ?  ";
  
         var table = ["users","approved", "user_email", req.body.request,req.body.email];
         if (req.body.request == "true") {
             req.body.request = 1;
+
         }
         else if (req.body.request == "false") {
-            
             req.body.request = 0; 
             
         }
@@ -204,12 +183,12 @@ REST_ROUTER.prototype.handleRoutes= function(router,connection,md5) {
         connection.query(query,function(err,rows){
 
             if(err) {
-                res.json({"Error" : true, "Message" : "Error Logging in"});
+                res.json({"Error" : true, "Message" : "Error Approving User"});
             } 
         
             
             else {
-                res.json({"Success" : true,  "Message" : "Password Changed Successfully"});
+                res.json({"Success" : true,  "Message" : "User Approved to Trainer"});
 
 
             }
