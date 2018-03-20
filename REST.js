@@ -308,6 +308,43 @@ REST_ROUTER.prototype.handleRoutes= function(router,connection,md5) {
     });
 
 
+     router.post("/profile/like/:user_id", function(req,res) {
+       var query = "INSERT INTO ??(??) VALUES (?)"
+       var table = ["users", "liked", req.body.user_id];
+            query = mysql.format(query,table);
+            connection.query(query,function(err,rows){
+                if(err) {
+                    res.json({"Error" : true, "Message" : "Error executing MySQL query for liking profile"});
+                } else {
+                    res.json({"Success" : true,  "Message" : "Success",rows});
+                }
+            });
+     });
+
+
+   router.post("/profile/dislike/:user_id", function(req,res) {
+       var query = "INSERT INTO ??(??) VALUES (?)"
+       var table = ["users", "disliked", req.body.user_id];
+            query = mysql.format(query,table);
+            connection.query(query,function(err,rows){
+                if(err) {
+                    res.json({"Error" : true, "Message" : "Error executing MySQL query for disliking profile"});
+                } else {
+                    res.json({"Success" : true,  "Message" : "Success",rows});
+                }
+            });
+     });
+
+
+
+  
+
+
+
+
+
+
+
 
 
 

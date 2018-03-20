@@ -5,6 +5,8 @@ var bodyParser  = require("body-parser");
 var md5 = require('MD5');
 var rest = require("./REST.js");
 var app  = express();
+var search = require('./search.js');
+
 
 function REST(){
     var self = this;
@@ -35,8 +37,12 @@ REST.prototype.configureExpress = function(connection) {
       app.use(bodyParser.urlencoded({ extended: true }));
       app.use(bodyParser.json());
       var router = express.Router();
+            var router2 = express.Router();
+
       app.use('/api', router);
       var rest_router = new rest(router,connection,md5);
+      var search_router = new search(router,connection,md5);
+
       self.startServer();
 }
 
