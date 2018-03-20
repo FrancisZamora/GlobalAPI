@@ -21,8 +21,9 @@ router.get("/retrieveprofessionals2",function(req,res){
         });
     });
     router.get("/search/:category", function(req,res) {
+        console.log("hello");
        var query = "SELECT * FROM ?? WHERE ?? = ? AND ROLE = 1;"
-       var table = [ "users", "category",req.body.category];
+       var table = [ "users", "category",req.params.category];
             query = mysql.format(query,table);
             console.log(query);
             connection.query(query,function(err,rows){
@@ -37,7 +38,7 @@ router.get("/retrieveprofessionals2",function(req,res){
 
     router.get("/profile/retrievelikes/:user_id", function(req,res) {
        var query = "SELECT ?? FROM ?? WHERE ?? = ?;"
-       var table = ["liked", "users", "user_id",req.body.user_id];
+       var table = ["liked", "users", "user_id",req.params.user_id];
             query = mysql.format(query,table);
             console.log(query);
             connection.query(query,function(err,rows){
@@ -51,7 +52,7 @@ router.get("/retrieveprofessionals2",function(req,res){
 
       router.post("/profile/like/:user_id", function(req,res) {
        var query = "INSERT INTO ??(??) VALUES (?)"
-       var table = ["users", "liked", req.body.user_id];
+       var table = ["users", "liked", req.params.user_id];
             query = mysql.format(query,table);
             connection.query(query,function(err,rows){
                 if(err) {
@@ -65,7 +66,7 @@ router.get("/retrieveprofessionals2",function(req,res){
 
    router.post("/profile/dislike/:user_id", function(req,res) {
        var query = "INSERT INTO ??(??) VALUES (?)"
-       var table = ["users", "disliked", req.body.user_id];
+       var table = ["users", "disliked", req.params.user_id];
             query = mysql.format(query,table);
             connection.query(query,function(err,rows){
                 if(err) {
@@ -91,7 +92,7 @@ router.get("/retrieveprofessionals2",function(req,res){
 
     router.get("/profile/retrieveuser/:user_id",function(req,res){
         var query = "SELECT * FROM ?? WHERE ?? = ? AND ROLE = 0";
-        var table = ["users", "user_id", req.body.user_id];
+        var table = ["users", "user_id", req.params.user_id];
         query = mysql.format(query,table);
         connection.query(query,function(err,rows){
             if(err) {
@@ -104,7 +105,7 @@ router.get("/retrieveprofessionals2",function(req,res){
 
     router.get("/profile/retrievetrainer/:user_id",function(req,res){
         var query = "SELECT * FROM ?? WHERE ?? = ? AND ROLE = 1";
-        var table = ["users", "user_id", req.body.user_id];
+        var table = ["users", "user_id", req.params.user_id];
         query = mysql.format(query,table);
         console.log(query);
         connection.query(query,function(err,rows){
