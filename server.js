@@ -6,6 +6,10 @@ var md5 = require('MD5');
 var rest = require("./REST.js");
 var app  = express();
 var search = require('./search.js');
+var account = require('./account.js');
+var survey = require('./survey.js');
+
+
 
 
 function REST(){
@@ -42,6 +46,8 @@ REST.prototype.configureExpress = function(connection) {
       app.use('/api', router);
       var rest_router = new rest(router,connection,md5);
       var search_router = new search(router,connection,md5);
+      var account_router = new account(router,connection,md5);
+      var survey_router = new survey(router,connection,md5);
 
       self.startServer();
 }
