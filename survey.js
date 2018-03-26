@@ -10,7 +10,7 @@ REST_ROUTER.prototype.handleRoutes= function(router,connection,md5) {
 
      router.post("/survey/trainersurvey",function(req,res){
         var query = "INSERT INTO ??(??,??,??,??,??,??,??,??,??,??,??,??,??,??,??,??,??) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
-        var table = ["trainer_survey","user_id", "full_name","gender","birthday","personal_website","degrees","years_of_experience","practice_challenges","number_of_clients","days_per_week","hours_per_week","remote_coaching","favorite_place_world","favorite_place_us","favorite_hobby","healthy_tip","favorite_book",req.body.user_id,req.body.name,req.body.gender,req.body.birthday,req.body.personal_website,req.body.degrees,req.body.years_of_experience,req.body.challenges,req.body.number_of_clients,req.body.days_per_week,req.body.hours_per_week,req.body.remote_coaching,req.body.favorite_place_world,req.body.favorite_place_us,req.body.hobby,req.body.healthy_tip,req.body.book];
+        var table = ["trainer_surveys","user_id", "full_name","gender","birthday","personal_website","degrees","years_of_experience","practice_challenges","number_of_clients","days_per_week","hours_per_week","remote_coaching","favorite_place_world","favorite_place_us","favorite_hobby","healthy_tip","favorite_book",req.body.user_id,req.body.name,req.body.gender,req.body.birthday,req.body.personal_website,req.body.degrees,req.body.years_of_experience,req.body.challenges,req.body.number_of_clients,req.body.days_per_week,req.body.hours_per_week,req.body.remote_coaching,req.body.favorite_place_world,req.body.favorite_place_us,req.body.hobby,req.body.healthy_tip,req.body.book];
 
         if (req.body.remote_coaching == "true") {
             req.body.remote_coaching = 1;
