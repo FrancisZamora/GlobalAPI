@@ -1,5 +1,7 @@
 var mysql = require("mysql");
 var express = require('express');
+var crypto = require('crypto');
+
 function REST_ROUTER(router,connection,md5) {
     var self = this;
     self.handleRoutes(router,connection,md5);
@@ -9,11 +11,12 @@ REST_ROUTER.prototype.handleRoutes= function(router,connection,md5) {
 
    router.post("/account/register",function(req,res){
         var query = "INSERT INTO ??(??,??,??,??,??) VALUES (?,?,?,?,?)";
-        var table = ["users","user_email","user_password","phone","name","role",req.body.email,req.body.password, req.body.phone,req.body.name,req.body.role];
-        if (req.body.role == 'client') {
+        var table = ["users","user_email","user_password","phone","name","role",req.body.email,md5(req.body.password), req.body.phone,req.body.name,req.body.role];
+
+        if (req.body.role == 'trainer') {
             req.body.role = 0;
         }
-        else {
+        else if (req.body.role == 'trainee') {
             req.body.role = 1;
         }
 
@@ -34,10 +37,9 @@ REST_ROUTER.prototype.handleRoutes= function(router,connection,md5) {
    router.post("/account/login",function(req,res){
         var query = "SELECT * FROM ?? WHERE ?? = ? ";
         var table = ["users","user_email",req.body.email, req.body.password];
-       
+        var salt = crypto.randomBytes(128).toString('base64')
         query = mysql.format(query,table);
         connection.query(query,function(err,rows){
-
             if(err) {
                 res.json({"Error" : true, "Message" : "Error Logging in"});
             } 
@@ -50,7 +52,7 @@ REST_ROUTER.prototype.handleRoutes= function(router,connection,md5) {
                 else {
                 password = rows[0].user_password
 
-                if (password != req.body.password) { 
+                if (md5(password) != md5(req.body.password)) { 
                     res.json({"Error": true, "Message"  :"Incorrect Password or Username"});
                 }
                 else if (password == req.body.password) {
@@ -66,7 +68,7 @@ REST_ROUTER.prototype.handleRoutes= function(router,connection,md5) {
 
    router.put("/account/updatepassword",function(req,res){
         var query = "UPDATE ?? SET ?? = ? WHERE ?? = ? AND ?? = ?";
-        var table = ["users","user_password", req.body.newpassword,"user_email",req.body.email,"user_password",req.body.oldpassword];
+        var table = ["users","user_password", md5(req.body.newpassword),"user_email",req.body.email,"user_password",md5(req.body.oldpassword)];
        
         query = mysql.format(query,table);
         console.log(query);
