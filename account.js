@@ -10,9 +10,10 @@ REST_ROUTER.prototype.handleRoutes= function(router,connection,md5) {
 
 
    router.post("/account/register",function(req,res){
-        var query = "INSERT INTO ??(??,??,??,??,??) VALUES (?,?,?,?,?)";
-        var table = ["users","user_email","user_password","phone","name","role",req.body.email,md5(req.body.password), req.body.phone,req.body.name,req.body.role];
+        var salt = crypto.randomBytes(128).toString('base64');
 
+        var query = "INSERT INTO ??(??,??,??,??,??,??) VALUES (?,?,?,?,?,?)";
+        var table = ["users","user_email","user_password","phone","name","role","salt",req.body.email,md5(md5(salt)+md5(req.body.password)), req.body.phone,req.body.name,req.body.role, salt];
         if (req.body.role == 'trainer') {
             req.body.role = 0;
         }
@@ -21,6 +22,8 @@ REST_ROUTER.prototype.handleRoutes= function(router,connection,md5) {
         }
 
         query = mysql.format(query,table);
+                console.log(query);
+
         connection.query(query,function(err,rows){
             if(err) {
                 res.json({"Error" : true, "Message" : "Error executing MySQL query: signing up "});
@@ -28,17 +31,17 @@ REST_ROUTER.prototype.handleRoutes= function(router,connection,md5) {
                 res.json({"Success" : true,  "Message" : "User Added !"});
             }
         });
-    });
+      });
 
 
 
      
 
    router.post("/account/login",function(req,res){
-        var query = "SELECT * FROM ?? WHERE ?? = ? ";
-        var table = ["users","user_email",req.body.email, req.body.password];
-        var salt = crypto.randomBytes(128).toString('base64')
+        var query = "SELECT ??,?? FROM ?? WHERE ?? = ? ";
+        var table = ["salt", "user_password", "users","user_email",req.body.email];
         query = mysql.format(query,table);
+        console.log(query);
         connection.query(query,function(err,rows){
             if(err) {
                 res.json({"Error" : true, "Message" : "Error Logging in"});
@@ -50,10 +53,14 @@ REST_ROUTER.prototype.handleRoutes= function(router,connection,md5) {
                     res.json({"Error" : true, "Message" : "Incorrect Password or Username"});
                 }
                 else {
-                password = rows[0].user_password
+                var password = rows[0].user_password;
+                var salt = rows[0].salt;
 
-                if (md5(password) != md5(req.body.password)) { 
+                if (password != (md5(md5(salt)+md5(req.body.password)))) { 
+                    console.log(password);
+                    console.log(md5(md5(salt)+md5(req.body.password)))
                     res.json({"Error": true, "Message"  :"Incorrect Password or Username"});
+
                 }
                 else if (password == req.body.password) {
                     res.json({"Success":true, "Message" : "Login Successful"});
