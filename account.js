@@ -55,7 +55,7 @@ REST_ROUTER.prototype.handleRoutes= function(router,connection,md5) {
                 else {
                 var password = rows[0].user_password;
                 var salt = rows[0].salt;
-
+                console.log(salt);
                 if (password != (md5(md5(salt)+md5(req.body.password)))) { 
                     console.log(password);
                     console.log(md5(md5(salt)+md5(req.body.password)))
