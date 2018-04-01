@@ -7,25 +7,38 @@ function REST_ROUTER(router,connection,md5) {
 REST_ROUTER.prototype.handleRoutes= function(router,connection,md5) {
 
 
-router.get("/retrieveprofessionals2",function(req,res){
-        var query = "SELECT * FROM ?? WHERE ROLE = 1 ";
-        var table = ["users"];
-        query = mysql.format(query,table);
-        connection.query(query,function(err,rows){
-
-            if(err) {
-                res.json({"Error" : true, "Message" : "Error executing MySQL query for professionals"});
-            } else {
-                res.json({"Success" : true,  "Message" : "Professionals",rows});
-            }
-        });
-    });
-    router.get("/search/:category", function(req,res) {
-        console.log("hello");
+    router.get("/searchTrainerCategory/:category", function(req,res) {
        var query = "SELECT * FROM ?? WHERE ?? = ? AND ROLE = 1;"
        var table = [ "users", "category",req.params.category];
             query = mysql.format(query,table);
             console.log(query);
+            connection.query(query,function(err,rows){
+                if(err) {
+                    res.json({"Error" : true, "Message" : "Error executing MySQL query for liking profile"});
+                } else {
+                    res.json({"Success" : true,  "Message" : "Success",rows});
+                }
+     });
+    });
+
+    router.get("/searchTrainers/:name", function(req,res) {
+       var query = "SELECT * FROM ?? WHERE ?? = ? AND ROLE = 1;"
+       var table = [ "users", "name",req.params.name];
+            query = mysql.format(query,table);
+            console.log(query);
+            connection.query(query,function(err,rows){
+                if(err) {
+                    res.json({"Error" : true, "Message" : "Error executing MySQL query for liking profile"});
+                } else {
+                    res.json({"Success" : true,  "Message" : "Success",rows});
+                }
+     });
+    });
+
+    router.get("/searchTrainees/:name", function(req,res) {
+       var query = "SELECT * FROM ?? WHERE ?? = ? AND ROLE = 0;"
+       var table = [ "users", "name",req.params.name];
+            query = mysql.format(query,table);
             connection.query(query,function(err,rows){
                 if(err) {
                     res.json({"Error" : true, "Message" : "Error executing MySQL query for liking profile"});

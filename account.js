@@ -10,10 +10,12 @@ REST_ROUTER.prototype.handleRoutes= function(router,connection,md5) {
 
 
    router.post("/account/register",function(req,res){
-        var salt = crypto.randomBytes(128).toString('base64');
+        var salt = crypto.randomBytes(64).toString('base64');
 
         var query = "INSERT INTO ??(??,??,??,??,??,??) VALUES (?,?,?,?,?,?)";
         var table = ["users","user_email","user_password","phone","name","role","salt",req.body.email,md5(md5(salt)+md5(req.body.password)), req.body.phone,req.body.name,req.body.role, salt];
+        console.log(salt);
+        console.log(md5(md5(salt) + md5(req.body.password)));
         if (req.body.role == 'trainer') {
             req.body.role = 0;
         }
@@ -55,14 +57,11 @@ REST_ROUTER.prototype.handleRoutes= function(router,connection,md5) {
                 else {
                 var password = rows[0].user_password;
                 var salt = rows[0].salt;
-                console.log(salt);
                 if (password != (md5(md5(salt)+md5(req.body.password)))) { 
-                    console.log(password);
-                    console.log(md5(md5(salt)+md5(req.body.password)))
                     res.json({"Error": true, "Message"  :"Incorrect Password or Username"});
 
                 }
-                else if (password == req.body.password) {
+                else if (password == (md5(md5(salt)+md5(req.body.password)))){
                     res.json({"Success":true, "Message" : "Login Successful"});
                 }
             }
