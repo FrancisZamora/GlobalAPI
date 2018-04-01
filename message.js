@@ -16,7 +16,24 @@ REST_ROUTER.prototype.handleRoutes= function(router,connection,md5) {
         console.log(query);
         connection.query(query,function(err,rows){
             if(err) {
-                res.json({"Error" : true, "Message" : "Error executing MySQL query: signing up "});
+                res.json({"Error" : true, "Message" : "Error executing MySQL query: Creating Chat"});
+            } else {
+                res.json({"Success" : true,  "Message" : "Chat Created!"});
+            }
+        });
+      });
+
+	   router.post("/message/sendmessage",function(req,res){
+
+        var query = "INSERT INTO ??(??,??) VALUES (?,?)";
+        var table = ["messages","id","message",req.body.id,req.body.message];
+      
+
+        query = mysql.format(query,table);
+        console.log(query);
+        connection.query(query,function(err,rows){
+            if(err) {
+                res.json({"Error" : true, "Message" : "Error executing MySQL query: Sending Message"});
             } else {
                 res.json({"Success" : true,  "Message" : "Chat Created!"});
             }
