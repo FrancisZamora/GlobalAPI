@@ -6,7 +6,7 @@ function REST_ROUTER(router,connection,md5) {
 
 REST_ROUTER.prototype.handleRoutes= function(router,connection,md5) {
 
-    router.get("/retrievegeneralusers",function(req,res){
+    router.get("/retrieveusers",function(req,res){
         var query = "SELECT * FROM ?? WHERE ROLE = 0";
         var table = ["users"];
         query = mysql.format(query,table);
@@ -20,9 +20,9 @@ REST_ROUTER.prototype.handleRoutes= function(router,connection,md5) {
     });
 
 
-    router.get("/profile/retrieveuser",function(req,res){
-        var query = "SELECT * FROM ?? WHERE ?? = ? AND ROLE = 0";
-        var table = ["users", "user_id", req.body.user_id];
+    router.get("/profile/retrievetrainers",function(req,res){
+        var query = "SELECT * FROM ?? WHERE ROLE = 1";
+        var table = ["users"];
         query = mysql.format(query,table);
         connection.query(query,function(err,rows){
             if(err) {
@@ -33,22 +33,26 @@ REST_ROUTER.prototype.handleRoutes= function(router,connection,md5) {
         });
     });
 
-    router.get("/profile/my",function(req,res){
+    router.get("/profile/:user_id",function(req,res){
         var query = "SELECT * FROM ?? WHERE ?? = ?";
         var table = ["users", "user_id", req.params.user_id];
         query = mysql.format(query,table);
         connection.query(query,function(err,rows){
             if(err) {
-                res.json({"Error" : true, "Message" : "Error executing MySQL query for general users"});
+                res.json({"Error" : true, "Message" : "Error executing MySQL query for fetching profile"});
             } else {
                 res.json({"Success" : true,  "Message" : "Trainers",rows});
             }
         });
     });
 
-    router.post("/profile/avatar",function(req,res){
-        var query = "SELECT * FROM ?? WHERE ?? = ?";
-        var table = ["users", "user_id", req.body.user_id];
+
+
+
+
+    router.put("/profile/avatar",function(req,res){
+        var query = "UPDATE ?? SET ?? = ?  WHERE ?? = ?";
+        var table = ["users", "avatar", req.body.avatar],"user_id",req.body.id];
         query = mysql.format(query,table);
         connection.query(query,function(err,rows){
             if(err) {

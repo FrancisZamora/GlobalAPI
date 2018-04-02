@@ -63,9 +63,9 @@ REST_ROUTER.prototype.handleRoutes= function(router,connection,md5) {
      });
     });
 
-      router.post("/profile/like/:user_id", function(req,res) {
+      router.post("/profile/like", function(req,res) {
        var query = "INSERT INTO ??(??) VALUES (?)"
-       var table = ["users", "liked", req.params.user_id];
+       var table = ["users", "liked", req.body.user_id];
             query = mysql.format(query,table);
             connection.query(query,function(err,rows){
                 if(err) {
@@ -77,9 +77,9 @@ REST_ROUTER.prototype.handleRoutes= function(router,connection,md5) {
      });
 
 
-   router.post("/profile/dislike/:user_id", function(req,res) {
+   router.post("/profile/dislike", function(req,res) {
        var query = "INSERT INTO ??(??) VALUES (?)"
-       var table = ["users", "disliked", req.params.user_id];
+       var table = ["users", "disliked", req.body.user_id];
             query = mysql.format(query,table);
             connection.query(query,function(err,rows){
                 if(err) {
