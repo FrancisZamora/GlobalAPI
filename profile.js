@@ -52,7 +52,7 @@ REST_ROUTER.prototype.handleRoutes= function(router,connection,md5) {
 
     router.put("/profile/avatar",function(req,res){
         var query = "UPDATE ?? SET ?? = ?  WHERE ?? = ?";
-        var table = ["users", "avatar", req.body.avatar],"user_id",req.body.id];
+        var table = ["users", "avatar", req.body.avatar,"user_id",req.body.id];
         query = mysql.format(query,table);
         connection.query(query,function(err,rows){
             if(err) {
@@ -60,6 +60,30 @@ REST_ROUTER.prototype.handleRoutes= function(router,connection,md5) {
             } else {
                 res.json({"Success" : true,  "Message" : "Trainers",rows});
             }
+        });
+    });
+
+        router.put("/profile/update",function(req,res){
+       var query = "UPDATE ?? SET ?? = ?  WHERE ?? = ?  ";
+ 
+        var table = ["users",req.body.category, req.body.value, "user_id",req.body.id];
+      
+       
+        query = mysql.format(query,table);
+        connection.query(query,function(err,rows){
+
+            if(err) {
+                res.json({"Error" : true, "Message" : "Error Updating Profile"});
+            } 
+        
+            
+            else {
+                res.json({"Success" : true,  "Message" : "User Updated Profile"});
+
+
+            }
+
+            
         });
     });
 
