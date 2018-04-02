@@ -72,6 +72,30 @@ REST_ROUTER.prototype.handleRoutes= function(router,connection,md5) {
         });
     });
 
+       router.put("/profile/update",function(req,res){
+       var query = "UPDATE ?? SET ?? = ?  WHERE ?? = ?  ";
+ 
+        var table = ["users",req.body.category, req.body.value, "user_id",req.body.id];
+      
+       
+        query = mysql.format(query,table);
+        connection.query(query,function(err,rows){
+
+            if(err) {
+                res.json({"Error" : true, "Message" : "Error Updating Profile"});
+            } 
+        
+            
+            else {
+                res.json({"Success" : true,  "Message" : "User Updated Profile"});
+
+
+            }
+
+            
+        });
+    });
+
    router.put("/account/updatepassword",function(req,res){
         var query = "UPDATE ?? SET ?? = ? WHERE ?? = ? AND ?? = ?";
         var table = ["users","user_password", md5(req.body.newpassword),"user_email",req.body.email,"user_password",md5(req.body.oldpassword)];
@@ -174,6 +198,23 @@ REST_ROUTER.prototype.handleRoutes= function(router,connection,md5) {
             
         });
     });
+
+
+    router.get("/retrieveprofessionals",function(req,res){
+        var query = "SELECT * FROM ?? WHERE ROLE = 1 ";
+        var table = ["users"];
+        query = mysql.format(query,table);
+        connection.query(query,function(err,rows){
+
+            if(err) {
+                res.json({"Error" : true, "Message" : "Error executing MySQL query for professionals"});
+            } else {
+                res.json({"Success" : true,  "Message" : "Professionals",rows});
+            }
+        });
+    });
+
+
 
 
 
