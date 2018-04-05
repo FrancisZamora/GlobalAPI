@@ -1,6 +1,6 @@
 var mysql = require("mysql");
 var express = require('express');
-var crypto = require('crypto');
+var bcrypt = require('bcrypt');
 
 function REST_ROUTER(router,connection,md5) {
     var self = this;
@@ -10,12 +10,12 @@ REST_ROUTER.prototype.handleRoutes= function(router,connection,md5) {
 
 
    router.post("/account/register",function(req,res){
-        var salt = crypto.randomBytes(64).toString('base64');
 
-        var query = "INSERT INTO ??(??,??,??,??,??,??) VALUES (?,?,?,?,?,?)";
-        var table = ["users","user_email","user_password","phone","name","role","salt",req.body.email,md5(md5(salt)+md5(req.body.password)), req.body.phone,req.body.name,req.body.role, salt];
-        console.log(salt);
-        console.log(md5(md5(salt) + md5(req.body.password)));
+        var query = "INSERT INTO ??(??,??,??,??,??) VALUES (?,?,?,?,?)";
+        bcrypt.hash(req.body.password,10, function(err,hash) {
+        req.body.password = hash;
+        console.log(hash);
+        var table = ["users","user_email","user_password","phone","name","role",req.body.email,req.body.password, req.body.phone,req.body.name,req.body.role];
         if (req.body.role == 'trainer') {
             req.body.role = 0;
         }
@@ -24,8 +24,6 @@ REST_ROUTER.prototype.handleRoutes= function(router,connection,md5) {
         }
 
         query = mysql.format(query,table);
-                console.log(query);
-
         connection.query(query,function(err,rows){
             if(err) {
                 res.json({"Error" : true, "Message" : "Error executing MySQL query: signing up "});
@@ -36,41 +34,41 @@ REST_ROUTER.prototype.handleRoutes= function(router,connection,md5) {
       });
 
 
+    });
+
+
 
      
 
-   router.post("/account/login",function(req,res){
-        var query = "SELECT ??,?? FROM ?? WHERE ?? = ? ";
-        var table = ["salt", "user_password", "users","user_email",req.body.email];
+   router.post("/account/login",function(req,resp){
+        var query = "SELECT ?? FROM ?? WHERE ?? = ? ";
+        var table = ["user_password", "users","user_email",req.body.email];
         query = mysql.format(query,table);
         console.log(query);
         connection.query(query,function(err,rows){
+            console.log(rows);
             if(err) {
-                res.json({"Error" : true, "Message" : "Error Logging in"});
+                resp.json({"Error" : true, "Message" : "Error Logging in"});
             } 
-        
-            
-            else {
-                if (rows.length < 1){
-                    res.json({"Error" : true, "Message" : "Incorrect Password or Username"});
+
+            bcrypt.compare(req.body.password, rows[0].user_password, function(err, res) {
+
+                if (res) {
+                    resp.json({"Success":true,"message" : "Login successful"});
+                   // res.json({"Success":true, "Message" : "Login Successful"});
+
                 }
                 else {
-                var password = rows[0].user_password;
-                var salt = rows[0].salt;
-                if (password != (md5(md5(salt)+md5(req.body.password)))) { 
-                    res.json({"Error": true, "Message"  :"Incorrect Password or Username"});
+                    resp.json({"Error": true, "Message"  :"Incorrect Password or Username"});
 
                 }
-                else if (password == (md5(md5(salt)+md5(req.body.password)))){
-                    res.json({"Success":true, "Message" : "Login Successful"});
-                }
-            }
-
-            }
+         
 
             
+             });
+           });
         });
-    });
+   
 
    
 
