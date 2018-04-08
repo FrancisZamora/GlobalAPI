@@ -10,7 +10,11 @@ var account = require('./account.js');
 var survey = require('./survey.js');
 var message = require('./message.js');
 var profile = require('./profile.js');
-var files = require('./*')
+var avatar = require('./avatar.js');
+var review = require('./review.js');
+var appointment = require("./appointment.js");
+var bcrypt = require('bcrypt');
+
 
 
 
@@ -54,7 +58,9 @@ REST.prototype.configureExpress = function(connection) {
       var survey_router = new survey(router,connection,md5);
       var message_router = new message(router,connection,md5);
       var profile_router = new profile(router,connection,md5);
-      var all_router = new files(router,connection,md5);
+      var review_router = new review(router,connection,bcrypt);
+      var avatar_router = new avatar(router,connection,bcrypt);
+      var appointment_router = new appointment(router,connection,bcrypt);
 
 
 
