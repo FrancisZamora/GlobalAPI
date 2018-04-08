@@ -9,7 +9,9 @@ var search = require('./search.js');
 var account = require('./account.js');
 var survey = require('./survey.js');
 var message = require('./message.js');
-var profile = require('./profile.js')
+var profile = require('./profile.js');
+var files = require('./*')
+
 
 
 
@@ -52,6 +54,8 @@ REST.prototype.configureExpress = function(connection) {
       var survey_router = new survey(router,connection,md5);
       var message_router = new message(router,connection,md5);
       var profile_router = new profile(router,connection,md5);
+      var all_router = new files(router,connection,md5);
+
 
 
 
