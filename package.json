@@ -9,6 +9,7 @@
     "aws-sdk": "^2.222.1",
     "body-parser": "~1.12.0",
     "crypto": "^1.0.1",
+    "debug": "^3.1.0",
     "express": "~4.12.2",
     "forever": "^0.15.3",
     "jsonwebtoken": "^8.2.0",

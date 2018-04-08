@@ -19,7 +19,6 @@ var bcrypt = require('bcrypt');
 
 
 
-
 function REST(){
     var self = this;
     self.connectMysql();
@@ -49,7 +48,6 @@ REST.prototype.configureExpress = function(connection) {
       app.use(bodyParser.urlencoded({ extended: true }));
       app.use(bodyParser.json());
       var router = express.Router();
-            var router2 = express.Router();
 
       app.use('/api', router);
       var rest_router = new rest(router,connection,md5);
@@ -69,6 +67,7 @@ REST.prototype.configureExpress = function(connection) {
 }
 
 REST.prototype.startServer = function() {
+    console.log(process.env.secretAccessKey);
 
     if (process.env.PORT)  {
       app.listen(process.env.PORT ,function(){
