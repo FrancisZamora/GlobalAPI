@@ -14,6 +14,7 @@ var avatar = require('./avatar.js');
 var review = require('./review.js');
 var appointment = require("./appointment.js");
 var bcrypt = require('bcrypt');
+require('dotenv').config()
 
 
 
