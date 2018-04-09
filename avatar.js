@@ -29,7 +29,7 @@ REST_ROUTER.prototype.handleRoutes= function(router,connection,md5) {
           }
         })
     });
-router.post('/upload', upload.array('file',1), (req, res, next) => {
+router.post('/upload', upload.array('upl',1), (req, res, next) => {
     res.send("Uploaded!");
 });
        
