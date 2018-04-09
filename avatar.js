@@ -1,15 +1,15 @@
 const mysql = require("mysql");
 const AWS = require('aws-sdk');
 const multer = require('multer');
-const multers3 = require('multerS3');
+const multerS3 = require('multer-s3'); 
 
-aws.config.update({
+AWS.config.update({
     secretAccessKey: process.env.secretAccessKey,
     accessKeyId: process.env.accessKeyId,
     region:'us-east-1'
 });
 
-const s3 = new aws.S3(); 
+const s3 = new AWS.S3(); 
 
 
 function REST_ROUTER(router,connection,md5) {
@@ -18,25 +18,33 @@ function REST_ROUTER(router,connection,md5) {
 }
 
 REST_ROUTER.prototype.handleRoutes= function(router,connection,md5) {
-       router.post("/avatar/uploadImage",function(req,res){
-        var bucketParams = {Bucket: String(req.user_image)};
-        s3.createBucket(bucketParams);
-        var s3Bucket = new AWS.S3( { params: {Bucket: 'myBucket'} } )
+      const upload = multer({
+          storage: multerS3({
+           s3: s3,
+          acl: 'public-read',
+          bucket: 'globaljoy',
+         key: function (req, file, cb) {
+            console.log(file);
+            cb(null, file.originalname); 
+          }
+        })
+    });
+router.post('/upload', upload.array('file',1), (req, res, next) => {
+    res.send("Uploaded!");
+});
+       
+       
 
-        var query = "INSERT INTO ??(??,??,??) VALUES (?,?,?)";
-        var table = ["chatroom","min_id","max_id","subject",req.body.min_id,req.body.max_id, req.body.subject];
+
+
+    
+
       
 
-        query = mysql.format(query,table);
-        console.log(query);
-        connection.query(query,function(err,rows){
-            if(err) {
-                res.json({"Error" : true, "Message" : "Error executing MySQL query: Creating Chat"});
-            } else {
-                res.json({"Success" : true,  "Message" : "Chat Created!"});
-            }
-        });
-      });
+
+
+
+
 
 	  
 
