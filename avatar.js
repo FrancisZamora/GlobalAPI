@@ -1,5 +1,17 @@
-var mysql = require("mysql");
-var AWS = require('aws-sdk');
+const mysql = require("mysql");
+const AWS = require('aws-sdk');
+const multer = require('multer');
+const multers3 = require('multerS3');
+
+aws.config.update({
+    secretAccessKey: process.env.secretAccessKey,
+    accessKeyId: process.env.accessKeyId,
+    region:'us-east-1'
+});
+
+const s3 = new aws.S3(); 
+
+
 function REST_ROUTER(router,connection,md5) {
     var self = this;
     self.handleRoutes(router,connection,md5);
