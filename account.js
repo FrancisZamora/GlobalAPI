@@ -38,8 +38,7 @@ REST_ROUTER.prototype.handleRoutes= function(router,connection,md5) {
 
 
 
-     
-
+    
    router.post("/account/login",function(req,resp){
         var query = "SELECT ?? FROM ?? WHERE ?? = ? ";
         var table = ["user_password", "users","user_email",req.body.email];
@@ -51,8 +50,8 @@ REST_ROUTER.prototype.handleRoutes= function(router,connection,md5) {
                 resp.json({"Error" : true, "Message" : "Error Logging in"});
             } 
 
-            bcrypt.compare(req.body.password, rows[0].user_password, function(err, res) {
-
+            bcrypt.compare(req.body.password,rows[0].user_password, function(err, res) {
+                console.log(res);
                 if (res) {
                     resp.json({"Success":true,"message" : "Login successful"});
                    // res.json({"Success":true, "Message" : "Login Successful"});

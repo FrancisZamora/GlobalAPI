@@ -14,6 +14,9 @@ var avatar = require('./avatar.js');
 var review = require('./review.js');
 var appointment = require("./appointment.js");
 var bcrypt = require('bcrypt');
+var passport = require('passport');
+var Strategy = require('passport-local').Strategy;
+
 require('dotenv').config()
 
 
@@ -43,6 +46,17 @@ REST.prototype.connectMysql = function() {
         }
     });
 }
+
+passport.use(new Strategy(
+  function(username, password, cb) {
+    db.users.findByUsername(username, function(err, user) {
+      if (err) { return cb(err); }
+      if (!user) { return cb(null, false); }
+      if (user.password != password) { return cb(null, false); }
+      return cb(null, user);
+    });
+  }));
+
 
 REST.prototype.configureExpress = function(connection) {
       var self = this;
