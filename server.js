@@ -47,15 +47,7 @@ REST.prototype.connectMysql = function() {
     });
 }
 
-passport.use(new Strategy(
-  function(username, password, cb) {
-    db.users.findByUsername(username, function(err, user) {
-      if (err) { return cb(err); }
-      if (!user) { return cb(null, false); }
-      if (user.password != password) { return cb(null, false); }
-      return cb(null, user);
-    });
-  }));
+
 
 
 REST.prototype.configureExpress = function(connection) {
@@ -63,7 +55,11 @@ REST.prototype.configureExpress = function(connection) {
       app.use(bodyParser.urlencoded({ extended: true }));
       app.use(bodyParser.json());
       var router = express.Router();
-
+      app.use(function(req, res, next) {
+       res.header(“Access-Control-Allow-Origin”, “*”);
+       res.header(“Access-Control-Allow-Headers”, “Origin, X-Requested-With, Content-Type, Accept”);
+       next();
+   });
       app.use('/api', router);
       var rest_router = new rest(router,connection,md5);
       var search_router = new search(router,connection,md5);
