@@ -33,6 +33,9 @@ REST_ROUTER.prototype.handleRoutes= function(router,connection,md5) {
         });
     });
 
+     
+
+
     router.get("/profile/:user_id",function(req,res){
         var query = "SELECT * FROM ?? WHERE ?? = ?";
         var table = ["users", "user_id", req.params.user_id];

@@ -23,22 +23,24 @@ REST_ROUTER.prototype.handleRoutes= function(router,connection,md5) {
         });
       });
 
-	   router.post("/message/sendmessage",function(req,res){
+       router.get("/reviews/rating/:reviewed_id",function(req,res){
 
-        var query = "INSERT INTO ??(??,??) VALUES (?,?)";
-        var table = ["messages","id","message",req.body.id,req.body.message];
-      
+        var query = "SELECT ?? FROM ?? WHERE ?? = ? ";
+        var table = ["rating","reviews ",req.params.reviewed_id];
+
 
         query = mysql.format(query,table);
         console.log(query);
         connection.query(query,function(err,rows){
             if(err) {
-                res.json({"Error" : true, "Message" : "Error executing MySQL query: Sending Message"});
+                res.json({"Error" : true, "Message" : "Error executing MySQL query: Retreiving Rating"});
             } else {
-                res.json({"Success" : true,  "Message" : "Chat Created!"});
+                res.json({"Success" : true,  "Message" : "Rating Retrieved"});
             }
         });
       });
+
+
 
 
 
