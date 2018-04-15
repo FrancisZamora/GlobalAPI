@@ -1,6 +1,6 @@
 var mysql = require("mysql");
 var express = require('express');
-var bcrypt = require('bcrypt');
+var bcrypt = require('bcryptjs');
 
 function REST_ROUTER(router,connection,md5) {
     var self = this;
