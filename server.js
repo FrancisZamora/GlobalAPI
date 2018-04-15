@@ -13,7 +13,7 @@ var profile = require('./profile.js');
 var avatar = require('./avatar.js');
 var review = require('./review.js');
 var appointment = require("./appointment.js");
-var bcrypt = require('bcrypt');
+var bcrypt = require('bcryptjs');
 var passport = require('passport');
 var Strategy = require('passport-local').Strategy;
 
