@@ -15,8 +15,9 @@ var review = require('./review.js');
 var appointment = require("./appointment.js");
 var bcrypt = require('bcryptjs');
 var passport = require('passport');
+var session = require('express-session')
 var Strategy = require('passport-local').Strategy;
-
+require('./passport.js')
 require('dotenv').config()
 
 
@@ -54,8 +55,16 @@ REST.prototype.configureExpress = function(connection) {
       var self = this;
       app.use(bodyParser.urlencoded({ extended: true }));
       app.use(bodyParser.json());
+      app.use(session({
+       secret: 'runningforhealth',
+       resave: true,
+       saveUninitialized: true
+      } )); // session secret
+      app.use(passport.initialize());
+      app.use(passport.session()); 
       var router = express.Router();
       var router2 = express.Router();
+
 
 
       app.use(function(req, res, next) {
@@ -68,7 +77,7 @@ REST.prototype.configureExpress = function(connection) {
       app.use('/api', router);
       var rest_router = new rest(router,connection,md5);
       var search_router = new search(router,connection,md5);
-      var account_router = new account(router,connection,md5);
+      var account_router = new account(router,connection,md5,passport);
       var survey_router = new survey(router,connection,md5);
       var message_router = new message(router,connection,md5);
       var profile_router = new profile(router,connection,md5);
@@ -101,7 +110,6 @@ REST.prototype.stop = function(err) {
     console.log("ISSUE WITH MYSQL n" + err);
     process.exit(1);
 }
-
 
 
 

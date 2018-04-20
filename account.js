@@ -1,12 +1,14 @@
 var mysql = require("mysql");
 var express = require('express');
 var bcrypt = require('bcryptjs');
+var passport = require('passport');
+
 
 function REST_ROUTER(router,connection,md5) {
     var self = this;
-    self.handleRoutes(router,connection,md5);
+    self.handleRoutes(router,connection,md5,passport);
 }
-REST_ROUTER.prototype.handleRoutes= function(router,connection,md5) {
+REST_ROUTER.prototype.handleRoutes= function(router,connection,md5,passport) {
 
 
    router.post("/account/register",function(req,res){
@@ -40,33 +42,13 @@ REST_ROUTER.prototype.handleRoutes= function(router,connection,md5) {
 
     
    router.post("/account/login",function(req,resp){
-        var query = "SELECT ?? FROM ?? WHERE ?? = ? ";
-        var table = ["user_password", "users","user_email",req.body.email];
-        query = mysql.format(query,table);
-        console.log(query);
-        connection.query(query,function(err,rows){
-            console.log(rows);
-            if(err) {
-                resp.json({"Error" : true, "Message" : "Error Logging in"});
-            } 
-
-            bcrypt.compare(req.body.password,rows[0].user_password, function(err, res) {
-                console.log(res);
-                if (res) {
-                    resp.json({"Success":true,"message" : "Login successful"});
-                   // res.json({"Success":true, "Message" : "Login Successful"});
-
-                }
-                else {
-                    resp.json({"Error": true, "Message"  :"Incorrect Password or Username"});
-
-                }
-         
-
-            
-             });
-           });
-        });
+    console.log("hello");
+          passport.authenticate('local-login', {failureRedirect: '/login'}),
+  function(req, res) {
+    res.json("SUCESS");
+    }
+    });       
+        
    
 
    
