@@ -14,9 +14,8 @@ var avatar = require('./avatar.js');
 var review = require('./review.js');
 var appointment = require("./appointment.js");
 var bcrypt = require('bcryptjs');
-var passport = require('passport');
-var session = require('express-session')
-var Strategy = require('passport-local').Strategy;
+var jwt = require('jsonwebtoken');
+
 require('./passport.js')
 require('dotenv').config()
 
@@ -51,19 +50,18 @@ REST.prototype.connectMysql = function() {
 
 
 
+
+
+
 REST.prototype.configureExpress = function(connection) {
       var self = this;
+     
+
+
       app.use(bodyParser.urlencoded({ extended: true }));
       app.use(bodyParser.json());
-      app.use(session({
-       secret: 'runningforhealth',
-       resave: true,
-       saveUninitialized: true
-      } )); // session secret
-      app.use(passport.initialize());
-      app.use(passport.session()); 
+ 
       var router = express.Router();
-      var router2 = express.Router();
 
 
 
@@ -72,12 +70,41 @@ REST.prototype.configureExpress = function(connection) {
        res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
        next();
      });
+  
 
 
       app.use('/api', router);
-      var rest_router = new rest(router,connection,md5);
+      app.get('/', (req, res) => {
+        res.json({
+        message: 'Welcome to the GlobalJoy API!'
+      });
+      });
+
+    function verifyToken(req, res, next) {
+      // Get auth header value
+      const bearerHeader = req.headers['authorization'];
+      // Check if bearer is undefined
+      if(typeof bearerHeader !== 'undefined') {
+        // Split at the space
+        const bearer = bearerHeader.split(' ');
+        // Get token from array
+        const bearerToken = bearer[1];
+        // Set the token
+        req.token = bearerToken;
+        // Next middleware
+        next();
+      } else {
+        // Forbidden
+        res.sendStatus(403);
+
+      }
+
+  }
+
+ 
+      var rest_router = new rest(router,connection,md5,verifyToken,jwt);
       var search_router = new search(router,connection,md5);
-      var account_router = new account(router,connection,md5,passport);
+      var account_router = new account(router,connection,md5,verifyToken,jwt);
       var survey_router = new survey(router,connection,md5);
       var message_router = new message(router,connection,md5);
       var profile_router = new profile(router,connection,md5);
@@ -85,13 +112,14 @@ REST.prototype.configureExpress = function(connection) {
       var avatar_router = new avatar(router,connection,bcrypt);
       var appointment_router = new appointment(router,connection,bcrypt);
 
-
+       
 
 
       self.startServer();
 }
 
 REST.prototype.startServer = function() {
+
     console.log(process.env.secretAccessKey);
 
     if (process.env.PORT)  {
@@ -110,6 +138,8 @@ REST.prototype.stop = function(err) {
     console.log("ISSUE WITH MYSQL n" + err);
     process.exit(1);
 }
+
+
 
 
 

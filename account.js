@@ -1,14 +1,13 @@
 var mysql = require("mysql");
 var express = require('express');
 var bcrypt = require('bcryptjs');
-var passport = require('passport');
 
-
-function REST_ROUTER(router,connection,md5) {
+function REST_ROUTER(router,connection,md5,verifyToken,jwt) {
     var self = this;
-    self.handleRoutes(router,connection,md5,passport);
+    self.handleRoutes(router,connection,md5,verifyToken,jwt);
 }
-REST_ROUTER.prototype.handleRoutes= function(router,connection,md5,passport) {
+REST_ROUTER.prototype.handleRoutes= function(router,connection,md5,verifyToken,jwt) {
+
 
 
    router.post("/account/register",function(req,res){
@@ -39,16 +38,64 @@ REST_ROUTER.prototype.handleRoutes= function(router,connection,md5,passport) {
     });
 
 
+  router.post('/posts', verifyToken, (req, res) => {  
+  jwt.verify(req.token, 'secretkey', (err, authData) => {
+    if(err) {
+       console.log(req.token);
+
+      res.sendStatus(403);
+    } else {
+      res.json({
+        message: 'Post created...',
+        authData
+      });
+    }
+  });
+});
+
+
+
 
     
    router.post("/account/login",function(req,resp){
-    console.log("hello");
-          passport.authenticate('local-login', {failureRedirect: '/login'}),
-  function(req, res) {
-    res.json("SUCESS");
-    }
-    });       
-        
+        var query = "SELECT * FROM ?? WHERE ?? = ? ";
+        var table = [ "users","user_email",req.body.email];
+        query = mysql.format(query,table);
+        console.log(query);
+        connection.query(query,function(err,rows){
+            console.log(rows);
+            if(err) {
+                resp.json({"Error" : true, "Message" : "Error Logging in"});
+            } 
+
+            bcrypt.compare(req.body.password,rows[0].user_password, function(err, res) {
+           
+                if (res) {
+                    const user = {
+                id:rows[0].user_id,
+                email:rows[0].user_email
+
+                 }
+
+            jwt.sign({user}, 'secretkey', { expiresIn: '30m' }, (err, token) => {
+             resp.json({
+                 token
+             });
+             });
+  
+         }
+                else {
+                    resp.json({"Error": true, "Message"  :"Incorrect Password or Username"});
+
+                }
+
+         
+
+            
+             });
+           });
+        });
+
    
 
    
@@ -80,7 +127,15 @@ REST_ROUTER.prototype.handleRoutes= function(router,connection,md5,passport) {
   
 
 
-   router.put("/account/updatephone",function(req,res){
+   router.put("/account/updatephone",verifyToken, function(req,res){
+      jwt.verify(req.token, 'secretkey', (err, authData) => {
+        if (err) {
+                  res.sendStatus(403);
+
+        }
+
+        else {
+        
        var query = "UPDATE ?? SET ?? = ? WHERE ?? = ?";
  
         var table = ["users","phone", req.body.phone,"user_email",req.body.email];
@@ -99,9 +154,13 @@ REST_ROUTER.prototype.handleRoutes= function(router,connection,md5,passport) {
 
             }
 
-            
-        });
+          
+    
     });
+    }
+    });
+});
+    
 
       router.put("/account/updateemail",function(req,res){
        var query = "UPDATE ?? SET ?? = ? WHERE ?? = ? ";
@@ -166,9 +225,6 @@ REST_ROUTER.prototype.handleRoutes= function(router,connection,md5,passport) {
 
 }
 module.exports = REST_ROUTER;
-
-
-
 
 
 
