@@ -103,7 +103,7 @@ REST.prototype.configureExpress = function(connection) {
 
  
       var rest_router = new rest(router,connection,md5,verifyToken,jwt);
-      var search_router = new search(router,connection,md5);
+      var search_router = new search(router,connection,md5,verifyToken,jwt);
       var account_router = new account(router,connection,md5,verifyToken,jwt);
       var survey_router = new survey(router,connection,md5);
       var message_router = new message(router,connection,md5);

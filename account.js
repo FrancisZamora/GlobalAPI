@@ -76,7 +76,7 @@ REST_ROUTER.prototype.handleRoutes= function(router,connection,md5,verifyToken,j
 
                  }
 
-            jwt.sign({user}, 'secretkey', { expiresIn: '30m' }, (err, token) => {
+            jwt.sign({user}, 'secretkey', { expiresIn: '1h' }, (err, token) => {
              resp.json({
                  token
              });
