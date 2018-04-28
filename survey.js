@@ -1,14 +1,20 @@
 var mysql = require("mysql");
-function REST_ROUTER(router,connection,md5) {
+function REST_ROUTER(router,connection,md5,verifyToken,jwt) {
     var self = this;
-    self.handleRoutes(router,connection,md5);
+    self.handleRoutes(router,connection,md5,verifyToken,jwt);
 }
+REST_ROUTER.prototype.handleRoutes= function(router,connection,md5,verifyToken,jwt) {
 
-REST_ROUTER.prototype.handleRoutes= function(router,connection,md5) {
 
    
 
      router.post("/survey/trainersurvey",function(req,res){
+         jwt.verify(req.token, 'secretkey', (err, authData) => {
+    if(err) {
+       console.log(req.token);
+
+      res.sendStatus(403);
+    } else {
         var query = "INSERT INTO ??(??,??,??,??,??,??,??,??,??,??,??,??,??,??,??,??,??) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
         var table = ["trainer_surveys","user_id", "full_name","gender","birthday","personal_website","degrees","years_of_experience","practice_challenges","number_of_clients","days_per_week","hours_per_week","remote_coaching","favorite_place_world","favorite_place_us","favorite_hobby","healthy_tip","favorite_book",req.body.user_id,req.body.name,req.body.gender,req.body.birthday,req.body.personal_website,req.body.degrees,req.body.years_of_experience,req.body.challenges,req.body.number_of_clients,req.body.days_per_week,req.body.hours_per_week,req.body.remote_coaching,req.body.favorite_place_world,req.body.favorite_place_us,req.body.hobby,req.body.healthy_tip,req.body.book];
 
@@ -30,10 +36,18 @@ REST_ROUTER.prototype.handleRoutes= function(router,connection,md5) {
                 res.json({"Success" : true,  "Message" : "Trainer Survey Responses Added !"});
             }
         });
+        }
+    });
     });
 
 
     router.post("/survey/traineesurvey",function(req,res){
+         jwt.verify(req.token, 'secretkey', (err, authData) => {
+        if(err) {
+         console.log(req.token);
+
+         res.sendStatus(403);
+         } else {
         var query = "INSERT INTO ??(??,??,??,??,??,??,??,??,??,??,??,??,??,??,??,??) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
         var table = ["trainee_survey","user_id", "full_name","gender","preferred_gender","birthday","facebook","healthy_reason","current_challenges","occupation","days_per_week","hours_per_week","remote_coaching","favorite_place_world","favorite_place_us","favorite_hobby","favorite_book",req.body.user_id,req.body.name,req.body.gender,req.body.preferred_gender,req.body.birthday,req.body.facebook,req.body.healthy_reason,req.body.current_challenges,req.body.occupation,req.body.days_per_week,req.body.hours_per_week,req.body.remote_coaching,req.body.favorite_place_world,req.body.favorite_place_us,req.body.hobby,req.body.book];
 
@@ -56,6 +70,8 @@ REST_ROUTER.prototype.handleRoutes= function(router,connection,md5) {
                 res.json({"Success" : true,  "Message" : "User Survey Responses Added !"});
             }
         });
+        }
+    });
     });
 
 
