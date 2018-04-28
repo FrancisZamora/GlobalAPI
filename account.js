@@ -1,13 +1,13 @@
 var mysql = require("mysql");
 var express = require('express');
 var bcrypt = require('bcryptjs');
-
+var request = require('request');
+var link = (process.env.PORT != null)?("http://globaljoy.herokuapp.com/api/login"):("http://localhost:3000/api/account/verifylogin")
 function REST_ROUTER(router,connection,md5,verifyToken,jwt) {
     var self = this;
     self.handleRoutes(router,connection,md5,verifyToken,jwt);
 }
 REST_ROUTER.prototype.handleRoutes= function(router,connection,md5,verifyToken,jwt) {
-
 
 
    router.post("/account/register",function(req,res){
@@ -63,7 +63,6 @@ REST_ROUTER.prototype.handleRoutes= function(router,connection,md5,verifyToken,j
         query = mysql.format(query,table);
         console.log(query);
         connection.query(query,function(err,rows){
-            console.log(rows);
             if(err) {
                 resp.json({"Error" : true, "Message" : "Error Logging in"});
             } 
@@ -77,7 +76,7 @@ REST_ROUTER.prototype.handleRoutes= function(router,connection,md5,verifyToken,j
 
                  }
 
-            jwt.sign({user}, 'secretkey', { expiresIn: '30m' }, (err, token) => {
+            jwt.sign({user}, 'secretkey', { expiresIn: '2h' }, (err, token) => {
              resp.json({
                  token
              });
@@ -96,13 +95,62 @@ REST_ROUTER.prototype.handleRoutes= function(router,connection,md5,verifyToken,j
            });
         });
 
+    router.post("/account/verifylogin",function(req,resp){
+        var query = "SELECT * FROM ?? WHERE ?? = ? ";
+        var table = [ "users","user_email",req.body.email];
+        query = mysql.format(query,table);
+        console.log(query);
+        connection.query(query,function(err,rows){
+            if(err) {
+              console.log('no');
+                resp.json({"Error" : true, "Message" : "Error Logging in"});
+            } 
+
+            bcrypt.compare(req.body.password,rows[0].user_password, function(err, res) {
+           
+                if (res) {
+              resp.json("T");
+  
+         }
+                else {
+                    resp.json("F");
+
+                }
+
+         
+
+            
+             });
+           });
+        });
+
+
+
+
    
 
    
 
    router.put("/account/updatepassword",function(req,res){
-        var query = "UPDATE ?? SET ?? = ? WHERE ?? = ? AND ?? = ?";
-        var table = ["users","user_password", md5(req.body.newpassword),"user_email",req.body.email,"user_password",md5(req.body.oldpassword)];
+    if (req.body.oldpassword == req.body.newpassword) {
+        res.json({"Error:":true, "Message":"New Password cannot be the same as the old password"})
+    }
+    else {
+    request.post({url:link, form: {email:req.body.email,password:req.body.oldpassword}}, function(err,httpResponse,body){
+
+      if (body[1] == "T"){
+
+        var query = "UPDATE ?? SET ?? = ? WHERE ?? = ?";
+        bcrypt.hash(req.body.newpassword,10, function(err,hash) {
+        req.body.newpassword = hash;
+        console.log(hash);
+        
+    
+        
+        var table = ["users","user_password", (req.body.newpassword),"user_email",req.body.email];
+        console.log(query);
+
+
        
         query = mysql.format(query,table);
         console.log(query);
@@ -114,15 +162,35 @@ REST_ROUTER.prototype.handleRoutes= function(router,connection,md5,verifyToken,j
         
             
             else {
-                
-                res.json({"Success" : true,  "Message" : "Password Changed Successfully"});
+              console.log(rows);
+                if (rows.affectedRows == 0) {
+                  res.json({"Error:":true, "Message":"Passwords did not match"})
+                }
+                else {
+                res.json({"Success" : true,  "Message" : rows.affectedRows});
+              }
 
 
             }
-
-            
+          });
+        
         });
+            
+        }
+        else {
+          res.json({"Error:":true, "Message":"Passwords did not match"})
+        }
+    
     });
+    }
+  });
+
+    
+
+
+
+
+
 
   
 
