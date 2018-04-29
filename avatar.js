@@ -32,6 +32,12 @@ REST_ROUTER.prototype.handleRoutes= function(router,connection,md5) {
         })
     });
 router.post('/upload', upload.array('upl',1), (req, res, next) => {
+  jwt.verify(req.token, 'secretkey', (err, authData) => {
+        if (err){
+          res.sendStatus(403);
+        }
+      
+      else {
     var bucketParams = {
    Bucket : 'globaljoy'
 };                    
@@ -45,7 +51,10 @@ s3.listObjects(bucketParams, function(err, data) {
    }
 });
     res.send("Uploaded!");
+  }
 });
+});
+
        
     
 
