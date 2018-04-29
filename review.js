@@ -8,7 +8,12 @@ REST_ROUTER.prototype.handleRoutes= function(router,connection,md5) {
 
 
        router.get("/reviews/getall/:reviewed_id",function(req,res){
-
+       	 jwt.verify(req.token, 'secretkey', (err, authData) => {
+        if (err){
+          res.sendStatus(403);
+        }
+      
+      else {
         var query = "SELECT * FROM ?? WHERE ?? = ? ";
         var table = ["rating","reviews ",req.params.reviewed_id];
 
@@ -22,11 +27,17 @@ REST_ROUTER.prototype.handleRoutes= function(router,connection,md5) {
                 res.json({"Success" : true,  "Message" : "Rating Retrieved"});
             }
         });
+   		 }
       });
-
+     });
 
       router.post("/reviews/createreview",function(req,res){
-
+      	jwt.verify(req.token, 'secretkey', (err, authData) => {
+        if (err){
+          res.sendStatus(403);
+        }
+      
+      else {
         var query = "INSERT INTO ??(??,??,??,??) VALUES (?,?,?,?)";
         var table = ["reviews","reviewer_id","reviewed_id","review_text","rating",req.body.reviewer_id,req.body.reviewed_id, req.body.text,req.body.rating];
 
@@ -41,10 +52,17 @@ REST_ROUTER.prototype.handleRoutes= function(router,connection,md5) {
                 res.json({"Success" : true,  "Message" : "Review Created"});
             }
         });
+   		 }
+      	});
       });
 
     router.delete("/reviews/deletereview",function(req,res){
-
+    	jwt.verify(req.token, 'secretkey', (err, authData) => {
+        if (err){
+          res.sendStatus(403);
+        }
+      
+      else {
         var query = "DELETE FROM ?? WHERE ?? = ? ";
         var table = ["reviews","review_id",req.body.review_id];
       
@@ -58,7 +76,9 @@ REST_ROUTER.prototype.handleRoutes= function(router,connection,md5) {
                 res.json({"Success" : true,  "Message" : "Review Deleted"});
             }
         });
+    	}	
       });
+    });
 
 
 
