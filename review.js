@@ -1,10 +1,9 @@
 var mysql = require("mysql");
-function REST_ROUTER(router,connection,md5) {
+function REST_ROUTER(router,connection,md5,verifyToken,jwt) {
     var self = this;
-    self.handleRoutes(router,connection,md5);
+    self.handleRoutes(router,connection,md5,verifyToken,jwt);
 }
-
-REST_ROUTER.prototype.handleRoutes= function(router,connection,md5) {
+REST_ROUTER.prototype.handleRoutes= function(router,connection,md5,verifyToken,jwt) {
 
 
        router.get("/reviews/getall/:reviewed_id",function(req,res){

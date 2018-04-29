@@ -14,12 +14,11 @@ AWS.config.update({
 const s3 = new AWS.S3(); 
 
 
-function REST_ROUTER(router,connection,md5) {
+function REST_ROUTER(router,connection,md5,verifyToken,jwt) {
     var self = this;
-    self.handleRoutes(router,connection,md5);
+    self.handleRoutes(router,connection,md5,verifyToken,jwt);
 }
-
-REST_ROUTER.prototype.handleRoutes= function(router,connection,md5) {
+REST_ROUTER.prototype.handleRoutes= function(router,connection,md5,verifyToken,jwt) {
       const upload = multer({
           storage: multerS3({
            s3: s3,

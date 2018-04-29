@@ -115,11 +115,11 @@ REST.prototype.configureExpress = function(connection) {
       var search_router = new search(router,connection,md5,verifyToken,jwt);
       var account_router = new account(router,connection,md5,verifyToken,jwt);
       var survey_router = new survey(router,connection,md5,verifyToken,jwt);
-      var message_router = new message(router,connection,md5);
-      var profile_router = new profile(router,connection,md5);
-      var review_router = new review(router,connection,bcrypt);
-      var avatar_router = new avatar(router,connection,bcrypt);
-      var appointment_router = new appointment(router,connection,bcrypt);
+      var message_router = new message(router,connection,md5,verifyToken,jwt);
+      var profile_router = new profile(router,connection,md5,verifyToken,jwt);
+      var review_router = new review(router,connection,md5,verifyToken,jwt);
+      var avatar_router = new avatar(router,connection,md5,verifyToken,jwt);
+      var appointment_router = new appointment(router,connection,md5,verifyToken,jwt);
 
        
 
